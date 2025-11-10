@@ -1,0 +1,78 @@
+<?php
+// $items variable expected
+?>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Items - Gudang IMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4">Daftar Barang</h1>
+        <div class="d-flex gap-2 align-items-center">
+            <form class="d-flex" method="get" action="index.php">
+                <input type="hidden" name="route" value="items/index">
+                <?php if (!empty($locations)): ?>
+                    <select name="location" class="form-select me-2">
+                        <option value="">-- Semua Lokasi --</option>
+                        <?php foreach ($locations as $loc): ?>
+                            <?php $code = $loc['code'] ?? ($loc['description'] ?? ''); ?>
+                            <option value="<?= htmlspecialchars($code) ?>" <?= (isset($selectedLocation) && $selectedLocation === $code) ? 'selected' : '' ?>><?= htmlspecialchars($code . ' ' . ($loc['description'] ?? '')) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                <?php else: ?>
+                    <input name="location" class="form-control me-2" placeholder="Filter lokasi" value="<?= htmlspecialchars($selectedLocation ?? '') ?>">
+                <?php endif; ?>
+                <button class="btn btn-outline-primary me-2" type="submit">Filter</button>
+                <a class="btn btn-outline-secondary" href="index.php?route=items/index">Reset</a>
+            </form>
+            <a class="btn btn-primary" href="index.php?route=items/create">Tambah Barang</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>SKU</th>
+                    <th>Qty</th>
+                    <th>Lokasi</th>
+                    <th>Supplier</th>
+                    <th>Aksi</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php if (!empty($items)): ?>
+                    <?php foreach ($items as $it): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($it['id']) ?></td>
+                            <td><?= htmlspecialchars($it['name']) ?></td>
+                            <td><?= htmlspecialchars($it['sku']) ?></td>
+                            <td><?= htmlspecialchars($it['quantity']) ?></td>
+                            <td><?= htmlspecialchars($it['location']) ?></td>
+                            <td><?= htmlspecialchars($it['supplier']) ?></td>
+                            <td>
+                                <a class="btn btn-sm btn-secondary" href="index.php?route=items/edit&id=<?= $it['id'] ?>">Edit</a>
+                                <a class="btn btn-sm btn-danger" href="index.php?route=items/delete&id=<?= $it['id'] ?>" onclick="return confirm('Hapus item ini?')">Hapus</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="7" class="text-center">Belum ada data barang.</td>
+                    </tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
