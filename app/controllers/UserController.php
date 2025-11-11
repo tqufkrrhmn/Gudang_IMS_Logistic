@@ -1,5 +1,6 @@
 <?php
 require_once BASE_PATH . '/app/models/User.php';
+require_once BASE_PATH . '/app/models/Role.php';
 
 class UserController
 {
@@ -25,11 +26,13 @@ class UserController
             return;
         }
 
-        $roles = [
-            1 => 'Administrator',
-            2 => 'Manajer Gudang',
-            3 => 'Operator Gudang'
-        ];
+        $roles = Role::all();
+        $roleOptions = [];
+        foreach ($roles as $role) {
+            $roleOptions[$role['id']] = $role['name'];
+        }
+        $roles = $roleOptions;
+        
         $user = null;
         $isEdit = false;
         require BASE_PATH . '/app/views/users/user_form.php';
@@ -81,7 +84,13 @@ class UserController
         }
 
         if (!empty($errors)) {
-            $roles = [1 => 'Administrator', 2 => 'Manajer Gudang', 3 => 'Operator Gudang'];
+            $roles = Role::all();
+            $roleOptions = [];
+            foreach ($roles as $role) {
+                $roleOptions[$role['id']] = $role['name'];
+            }
+            $roles = $roleOptions;
+            
             $user = null;
             $isEdit = false;
             require BASE_PATH . '/app/views/users/user_form.php';
@@ -125,11 +134,13 @@ class UserController
             exit;
         }
 
-        $roles = [
-            1 => 'Administrator',
-            2 => 'Manajer Gudang',
-            3 => 'Operator Gudang'
-        ];
+        $roles = Role::all();
+        $roleOptions = [];
+        foreach ($roles as $role) {
+            $roleOptions[$role['id']] = $role['name'];
+        }
+        $roles = $roleOptions;
+        
         $isEdit = true;
         require BASE_PATH . '/app/views/users/user_form.php';
     }
@@ -178,7 +189,13 @@ class UserController
         }
 
         if (!empty($errors)) {
-            $roles = [1 => 'Administrator', 2 => 'Manajer Gudang', 3 => 'Operator Gudang'];
+            $roles = Role::all();
+            $roleOptions = [];
+            foreach ($roles as $role) {
+                $roleOptions[$role['id']] = $role['name'];
+            }
+            $roles = $roleOptions;
+            
             $isEdit = true;
             require BASE_PATH . '/app/views/users/user_form.php';
             return;
