@@ -1,14 +1,17 @@
 <?php
 // app/views/auth/dashboard.php
 // Dashboard yang menampilkan informasi user dan ringkasan berdasarkan role
-$roleName = [
-    1 => 'Administrator',
-    2 => 'Manajer Gudang',
-    3 => 'Operator Gudang'
-];
+require_once BASE_PATH . '/app/models/Role.php';
+
+// Load role names dynamically from database
+$allRoles = Role::all();
+$roleName = [];
+foreach ($allRoles as $role) {
+    $roleName[$role['id']] = $role['name'];
+}
 
 $rolePermissions = [
-    1 => ['items', 'locations', 'suppliers', 'receiving', 'shipping', 'stock', 'users'],
+    1 => ['items', 'locations', 'suppliers', 'receiving', 'shipping', 'stock', 'users', 'roles'],
     2 => ['items', 'locations', 'suppliers', 'receiving', 'shipping', 'stock'],
     3 => ['receiving', 'shipping', 'stock'],
 ];
@@ -26,6 +29,7 @@ $menuItems = [
     'shipping' => ['label' => 'Pengiriman Barang', 'icon' => '📦', 'route' => 'shipping/index'],
     'stock' => ['label' => 'Pergerakan Stok', 'icon' => '📊', 'route' => 'stock/index'],
     'users' => ['label' => 'Manajemen User', 'icon' => '👥', 'route' => 'users/index'],
+    'roles' => ['label' => 'Manajemen Role', 'icon' => '🔐', 'route' => 'roles/index'],
 ];
 ?>
 <!doctype html>
