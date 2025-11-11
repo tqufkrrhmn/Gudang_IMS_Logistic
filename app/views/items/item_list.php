@@ -1,18 +1,62 @@
 <?php
 // $items variable expected
 ?>
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="id">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Items - Gudang IMS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Barang - Gudang IMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f5f5f5;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 20px;
+        }
+        .container-main {
+            padding: 30px;
+        }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .btn-back:hover {
+            background: #5a6268;
+            color: white;
+        }
+    </style>
 </head>
-<body class="bg-light">
-<div class="container py-4">
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand">🏢 Gudang IMS</span>
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <span class="text-white" style="font-size: 14px;">👤 <?= htmlspecialchars($_SESSION['user']['full_name'] ?? $_SESSION['user']['username']) ?></span>
+            <a class="btn btn-light btn-sm" href="index.php?route=auth/logout">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container-main">
+    <a href="index.php?route=auth/dashboard" class="btn-back">← Kembali ke Dashboard</a>
+
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h4">Daftar Barang</h1>
+        <h1 class="h4">📦 Daftar Barang</h1>
         <div class="d-flex gap-2 align-items-center">
             <form class="d-flex" method="get" action="index.php">
                 <input type="hidden" name="route" value="items/index">
@@ -30,7 +74,7 @@
                 <button class="btn btn-outline-primary me-2" type="submit">Filter</button>
                 <a class="btn btn-outline-secondary" href="index.php?route=items/index">Reset</a>
             </form>
-            <a class="btn btn-primary" href="index.php?route=items/create">Tambah Barang</a>
+            <a class="btn btn-primary" href="index.php?route=items/create">+ Tambah Barang</a>
         </div>
     </div>
 

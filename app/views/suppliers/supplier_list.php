@@ -1,12 +1,12 @@
 <?php
-// app/views/stock/stock_list.php
+// app/views/suppliers/supplier_list.php
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pergerakan Stok - Gudang IMS</title>
+    <title>Data Pemasok - Gudang IMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -34,6 +34,22 @@
             font-weight: 700;
             color: #333;
         }
+        .btn-create {
+            background: #667eea;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        .btn-create:hover {
+            background: #764ba2;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
         .table-container {
             background: white;
             border-radius: 15px;
@@ -54,6 +70,38 @@
             padding: 15px;
             vertical-align: middle;
             border-bottom: 1px solid #dee2e6;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-edit {
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .btn-edit:hover {
+            background: #0056b3;
+            color: white;
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-delete:hover {
+            background: #c82333;
+            color: white;
         }
         .btn-back {
             background: #6c757d;
@@ -78,20 +126,6 @@
             font-size: 60px;
             margin-bottom: 15px;
         }
-        .badge-in {
-            background: #28a745;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-        .badge-out {
-            background: #dc3545;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-        }
     </style>
 </head>
 <body>
@@ -112,16 +146,17 @@
 
     <!-- Page Header -->
     <div class="page-header">
-        <h2>📊 Pergerakan Stok</h2>
+        <h2>🚚 Data Pemasok</h2>
+        <a href="index.php?route=suppliers/create" class="btn-create">+ Tambah Pemasok</a>
     </div>
 
-    <!-- Stock Transactions Table -->
+    <!-- Suppliers Table -->
     <div class="table-container">
-        <?php if (empty($transactions)): ?>
+        <?php if (empty($suppliers)): ?>
             <div class="empty-state">
-                <div class="empty-state-icon">📊</div>
-                <h5>Tidak ada pergerakan stok ditemukan</h5>
-                <p>Semua pergerakan stok akan ditampilkan di sini.</p>
+                <div class="empty-state-icon">🚚</div>
+                <h5>Tidak ada pemasok ditemukan</h5>
+                <p>Mulai dengan menambahkan pemasok baru.</p>
             </div>
         <?php else: ?>
             <div class="table-responsive">
@@ -129,34 +164,32 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Waktu</th>
-                            <th>Barang</th>
-                            <th>Tipe</th>
-                            <th>Perubahan</th>
-                            <th>Ref ID</th>
-                            <th>User</th>
-                            <th>Catatan</th>
+                            <th>Nama Pemasok</th>
+                            <th>Kontak Orang</th>
+                            <th>Telepon</th>
+                            <th>Email</th>
+                            <th>Alamat</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
-                        <?php foreach ($transactions as $t): ?>
+                        <?php foreach ($suppliers as $supplier): ?>
                             <tr>
                                 <td><?= $no++ ?></td>
-                                <td><?= htmlspecialchars(date('d/m/Y H:i', strtotime($t['created_at'] ?? 'now'))) ?></td>
-                                <td><?= htmlspecialchars($t['item_name'] ?? '-') ?></td>
+                                <td><strong><?= htmlspecialchars($supplier['name']) ?></strong></td>
+                                <td><?= htmlspecialchars($supplier['contact_person'] ?? '-') ?></td>
+                                <td><?= htmlspecialchars($supplier['phone'] ?? '-') ?></td>
+                                <td><?= htmlspecialchars($supplier['email'] ?? '-') ?></td>
+                                <td><?= htmlspecialchars($supplier['address'] ?? '-') ?></td>
                                 <td>
-                                    <?php 
-                                    $type = $t['type'] ?? 'unknown';
-                                    $badge_class = ($type === 'in' || $type === 'receiving') ? 'badge-in' : 'badge-out';
-                                    $type_label = ($type === 'in' || $type === 'receiving') ? 'Masuk' : 'Keluar';
-                                    ?>
-                                    <span class="<?= $badge_class ?>"><?= htmlspecialchars($type_label) ?></span>
+                                    <div class="action-buttons">
+                                        <a href="index.php?route=suppliers/edit&id=<?= $supplier['id'] ?>" class="btn-edit">Edit</a>
+                                        <form method="POST" action="index.php?route=suppliers/delete&id=<?= $supplier['id'] ?>" style="display: inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pemasok ini?');">
+                                            <button type="submit" class="btn-delete">Hapus</button>
+                                        </form>
+                                    </div>
                                 </td>
-                                <td><?= htmlspecialchars($t['change'] ?? 0) ?></td>
-                                <td><?= htmlspecialchars($t['reference_id'] ?? '-') ?></td>
-                                <td><?= htmlspecialchars($t['user_name'] ?? '-') ?></td>
-                                <td><?= htmlspecialchars(substr($t['note'] ?? '-', 0, 30)) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
