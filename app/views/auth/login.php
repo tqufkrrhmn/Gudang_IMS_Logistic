@@ -1,11 +1,5 @@
 <?php
 // app/views/auth/login.php
-// Enhanced login page dengan informasi role
-$roleDescriptions = [
-    'admin' => 'Administrator - Akses Penuh ke Sistem',
-    'manager' => 'Manajer Gudang - Kelola Inventaris & Laporan',
-    'operator' => 'Operator Gudang - Penerimaan & Pengiriman Barang',
-];
 ?>
 <!doctype html>
 <html lang="id">
@@ -43,21 +37,6 @@ $roleDescriptions = [
 
                 <button class="btn btn-login" type="submit">🔓 Login</button>
             </form>
-
-            <div class="login-divider">atau</div>
-
-            <div class="role-info-section">
-                <h6>📋 Tipe Pengguna & Akses</h6>
-                <?php foreach ($roleDescriptions as $role => $desc): ?>
-                    <div class="role-item">
-                        <div>
-                            <span class="role-badge"><?= htmlspecialchars(strtoupper($role)) ?></span>
-                            <small class="text-muted">ID: <?= htmlspecialchars($role) ?></small>
-                        </div>
-                        <div class="role-desc"><?= htmlspecialchars($desc) ?></div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
 
             <div class="login-alert login-alert-info">
                 <strong>💡 Demo:</strong> 
