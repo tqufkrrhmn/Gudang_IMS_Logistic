@@ -22,8 +22,19 @@ spl_autoload_register(function ($class) {
     return false;
 });
 
+// Authentication guard: redirect to login if not authenticated
+$isPublicRoute = isset($_GET['route']) && (
+    str_starts_with($_GET['route'], 'auth/login') ||
+    str_starts_with($_GET['route'], 'auth/do_login')
+);
+
+if (empty($_SESSION['user']) && !$isPublicRoute) {
+    header('Location: index.php?route=auth/login');
+    exit;
+}
+
 // routing
-$route = $_GET['route'] ?? 'items/index';
+$route = $_GET['route'] ?? 'auth/login'; // Default to login if not authenticated
 [$controllerSegment, $action] = array_pad(explode('/', $route), 2, 'index');
 
 // Simple plural -> singular controller name heuristic: remove trailing s

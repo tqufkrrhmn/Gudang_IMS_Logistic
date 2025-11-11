@@ -55,4 +55,55 @@ class User
         if (!$user) return false;
         return password_verify($password, $user['password']);
     }
+
+    public static function all()
+    {
+        $pdo = self::pdo();
+        $stmt = $pdo->prepare('SELECT * FROM users ORDER BY created_at DESC');
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public static function update(int $id, array $data)
+    {
+        $pdo = self::pdo();
+        $fields = [];
+        $params = ['id' => $id];
+
+        if (isset($data['username'])) {
+            $fields[] = 'username = :username';
+            $params['username'] = $data['username'];
+        }
+        if (isset($data['password'])) {
+            $fields[] = 'password = :password';
+            $params['password'] = $data['password'];
+        }
+        if (isset($data['full_name'])) {
+            $fields[] = 'full_name = :full_name';
+            $params['full_name'] = $data['full_name'];
+        }
+        if (isset($data['email'])) {
+            $fields[] = 'email = :email';
+            $params['email'] = $data['email'];
+        }
+        if (isset($data['role_id'])) {
+            $fields[] = 'role_id = :role_id';
+            $params['role_id'] = $data['role_id'];
+        }
+
+        if (empty($fields)) {
+            return; // Nothing to update
+        }
+
+        $sql = 'UPDATE users SET ' . implode(', ', $fields) . ' WHERE id = :id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+    }
+
+    public static function delete(int $id)
+    {
+        $pdo = self::pdo();
+        $stmt = $pdo->prepare('DELETE FROM users WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+    }
 }
