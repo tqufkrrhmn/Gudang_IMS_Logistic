@@ -8,36 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Barang - Gudang IMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: #f5f5f5;
-        }
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 20px;
-        }
-        .container-main {
-            padding: 30px;
-        }
-        .btn-back {
-            background: #6c757d;
-            color: white;
-            text-decoration: none;
-            padding: 10px 25px;
-            border-radius: 8px;
-            transition: all 0.3s;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-        .btn-back:hover {
-            background: #5a6268;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
 <!-- Navbar -->
