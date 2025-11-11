@@ -26,8 +26,8 @@ class Receipt
             SELECT r.*, s.name as supplier_name, u.username as created_by_name
             FROM receipts r
             LEFT JOIN suppliers s ON r.supplier_id = s.id
-            LEFT JOIN users u ON r.created_by = u.id
-            ORDER BY r.receipt_date DESC
+            LEFT JOIN users u ON r.received_by = u.id
+            ORDER BY r.received_at DESC
         ');
         $stmt->execute();
         return $stmt->fetchAll();
@@ -40,7 +40,7 @@ class Receipt
             SELECT r.*, s.name as supplier_name, u.username as created_by_name
             FROM receipts r
             LEFT JOIN suppliers s ON r.supplier_id = s.id
-            LEFT JOIN users u ON r.created_by = u.id
+            LEFT JOIN users u ON r.received_by = u.id
             WHERE r.id = :id LIMIT 1
         ');
         $stmt->execute(['id' => $id]);
@@ -51,16 +51,19 @@ class Receipt
     {
         $pdo = self::pdo();
         
+        // Generate receipt number
+        $receiptNo = 'RCP-' . date('YmdHis');
+        
         // Insert header
         $stmt = $pdo->prepare('
-            INSERT INTO receipts (supplier_id, receipt_date, notes, created_by)
-            VALUES (:supplier_id, :receipt_date, :notes, :created_by)
+            INSERT INTO receipts (receipt_no, supplier_id, received_by, notes)
+            VALUES (:receipt_no, :supplier_id, :received_by, :notes)
         ');
         $stmt->execute([
+            'receipt_no' => $receiptNo,
             'supplier_id' => $header['supplier_id'],
-            'receipt_date' => $header['receipt_date'] ?? date('Y-m-d'),
+            'received_by' => $createdBy,
             'notes' => $header['notes'] ?? '',
-            'created_by' => $createdBy,
         ]);
         
         $receiptId = $pdo->lastInsertId();
@@ -89,16 +92,16 @@ class Receipt
 
             // Log stock transaction
             $transStmt = $pdo->prepare('
-                INSERT INTO stock_transactions (item_id, type, change, reference_id, user_id, note)
-                VALUES (:item_id, :type, :change, :reference_id, :user_id, :note)
+                INSERT INTO stock_transactions (item_id, type, change, reference_id, created_by, note)
+                VALUES (:item_id, :type, :change, :reference_id, :created_by, :note)
             ');
             $transStmt->execute([
                 'item_id' => $line['item_id'],
-                'type' => 'receiving',
+                'type' => 'RECEIPT',
                 'change' => $line['quantity'],
                 'reference_id' => $receiptId,
-                'user_id' => $createdBy,
-                'note' => 'Penerimaan dari receipt #' . $receiptId,
+                'created_by' => $createdBy,
+                'note' => 'Penerimaan dari receipt #' . $receiptNo,
             ]);
         }
 

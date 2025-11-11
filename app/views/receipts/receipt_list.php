@@ -135,7 +135,7 @@
                             <th>No. Receipt</th>
                             <th>Supplier</th>
                             <th>Tanggal Terima</th>
-                            <th>Dibuat Oleh</th>
+                            <th>Diterima Oleh</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -146,7 +146,7 @@
                                 <td><?= $no++ ?></td>
                                 <td><strong><?= htmlspecialchars($r['receipt_no'] ?? $r['id']) ?></strong></td>
                                 <td><?= htmlspecialchars($r['supplier_name'] ?? '-') ?></td>
-                                <td><?= htmlspecialchars(isset($r['receipt_date']) ? date('d/m/Y', strtotime($r['receipt_date'])) : (isset($r['received_at']) ? date('d/m/Y', strtotime($r['received_at'])) : '-')) ?></td>
+                                <td><?= htmlspecialchars(isset($r['received_at']) ? date('d/m/Y H:i', strtotime($r['received_at'])) : '-') ?></td>
                                 <td><?= htmlspecialchars($r['created_by_name'] ?? '-') ?></td>
                                 <td>
                                     <a class="btn btn-sm btn-info" href="#" style="background: #17a2b8; border: none; padding: 6px 12px; border-radius: 6px; color: white; text-decoration: none; font-size: 12px;">Lihat</a>

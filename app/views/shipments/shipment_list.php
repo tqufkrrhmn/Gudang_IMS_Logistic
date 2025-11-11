@@ -135,7 +135,7 @@
                             <th>No. Shipment</th>
                             <th>Tujuan</th>
                             <th>Tanggal Kirim</th>
-                            <th>Dibuat Oleh</th>
+                            <th>Dikirim Oleh</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -146,7 +146,7 @@
                                 <td><?= $no++ ?></td>
                                 <td><strong><?= htmlspecialchars($s['shipment_no'] ?? $s['id']) ?></strong></td>
                                 <td><?= htmlspecialchars($s['destination'] ?? '-') ?></td>
-                                <td><?= htmlspecialchars(isset($s['shipment_date']) ? date('d/m/Y', strtotime($s['shipment_date'])) : (isset($s['shipped_at']) ? date('d/m/Y', strtotime($s['shipped_at'])) : '-')) ?></td>
+                                <td><?= htmlspecialchars(isset($s['shipped_at']) ? date('d/m/Y H:i', strtotime($s['shipped_at'])) : '-') ?></td>
                                 <td><?= htmlspecialchars($s['created_by_name'] ?? '-') ?></td>
                                 <td>
                                     <a class="btn btn-sm btn-info" href="#" style="background: #17a2b8; border: none; padding: 6px 12px; border-radius: 6px; color: white; text-decoration: none; font-size: 12px;">Lihat</a>

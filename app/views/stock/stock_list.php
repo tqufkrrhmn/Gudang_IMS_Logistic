@@ -147,9 +147,9 @@
                                 <td><?= htmlspecialchars($t['item_name'] ?? '-') ?></td>
                                 <td>
                                     <?php 
-                                    $type = $t['type'] ?? 'unknown';
-                                    $badge_class = ($type === 'in' || $type === 'receiving') ? 'badge-in' : 'badge-out';
-                                    $type_label = ($type === 'in' || $type === 'receiving') ? 'Masuk' : 'Keluar';
+                                    $type = strtolower($t['type'] ?? 'unknown');
+                                    $badge_class = ($type === 'receipt') ? 'badge-in' : 'badge-out';
+                                    $type_label = ($type === 'receipt') ? 'Masuk' : 'Keluar';
                                     ?>
                                     <span class="<?= $badge_class ?>"><?= htmlspecialchars($type_label) ?></span>
                                 </td>

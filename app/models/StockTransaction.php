@@ -26,7 +26,7 @@ class StockTransaction
             SELECT st.*, i.name as item_name, u.username as user_name
             FROM stock_transactions st
             LEFT JOIN items i ON st.item_id = i.id
-            LEFT JOIN users u ON st.user_id = u.id
+            LEFT JOIN users u ON st.created_by = u.id
             ORDER BY st.created_at DESC
             LIMIT :limit
         ');
@@ -42,7 +42,7 @@ class StockTransaction
             SELECT st.*, i.name as item_name, u.username as user_name
             FROM stock_transactions st
             LEFT JOIN items i ON st.item_id = i.id
-            LEFT JOIN users u ON st.user_id = u.id
+            LEFT JOIN users u ON st.created_by = u.id
             WHERE st.item_id = :item_id
             ORDER BY st.created_at DESC
             LIMIT :limit

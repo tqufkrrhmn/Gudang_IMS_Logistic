@@ -25,8 +25,8 @@ class Shipment
         $stmt = $pdo->prepare('
             SELECT s.*, u.username as created_by_name
             FROM shipments s
-            LEFT JOIN users u ON s.created_by = u.id
-            ORDER BY s.shipment_date DESC
+            LEFT JOIN users u ON s.shipped_by = u.id
+            ORDER BY s.shipped_at DESC
         ');
         $stmt->execute();
         return $stmt->fetchAll();
@@ -38,7 +38,7 @@ class Shipment
         $stmt = $pdo->prepare('
             SELECT s.*, u.username as created_by_name
             FROM shipments s
-            LEFT JOIN users u ON s.created_by = u.id
+            LEFT JOIN users u ON s.shipped_by = u.id
             WHERE s.id = :id LIMIT 1
         ');
         $stmt->execute(['id' => $id]);
@@ -49,16 +49,19 @@ class Shipment
     {
         $pdo = self::pdo();
         
+        // Generate shipment number
+        $shipmentNo = 'SHP-' . date('YmdHis');
+        
         // Insert header
         $stmt = $pdo->prepare('
-            INSERT INTO shipments (destination, shipment_date, notes, created_by)
-            VALUES (:destination, :shipment_date, :notes, :created_by)
+            INSERT INTO shipments (shipment_no, shipped_by, destination, notes)
+            VALUES (:shipment_no, :shipped_by, :destination, :notes)
         ');
         $stmt->execute([
+            'shipment_no' => $shipmentNo,
+            'shipped_by' => $createdBy,
             'destination' => $header['destination'],
-            'shipment_date' => $header['shipment_date'] ?? date('Y-m-d'),
             'notes' => $header['notes'] ?? '',
-            'created_by' => $createdBy,
         ]);
         
         $shipmentId = $pdo->lastInsertId();
@@ -66,14 +69,13 @@ class Shipment
         // Insert line items
         foreach ($lineItems as $line) {
             $lineStmt = $pdo->prepare('
-                INSERT INTO shipment_lines (shipment_id, item_id, quantity, unit_price)
-                VALUES (:shipment_id, :item_id, :quantity, :unit_price)
+                INSERT INTO shipment_lines (shipment_id, item_id, quantity)
+                VALUES (:shipment_id, :item_id, :quantity)
             ');
             $lineStmt->execute([
                 'shipment_id' => $shipmentId,
                 'item_id' => $line['item_id'],
                 'quantity' => $line['quantity'],
-                'unit_price' => $line['unit_price'] ?? 0,
             ]);
 
             // Update item quantity (decrease)
@@ -87,16 +89,16 @@ class Shipment
 
             // Log stock transaction
             $transStmt = $pdo->prepare('
-                INSERT INTO stock_transactions (item_id, type, change, reference_id, user_id, note)
-                VALUES (:item_id, :type, :change, :reference_id, :user_id, :note)
+                INSERT INTO stock_transactions (item_id, type, change, reference_id, created_by, note)
+                VALUES (:item_id, :type, :change, :reference_id, :created_by, :note)
             ');
             $transStmt->execute([
                 'item_id' => $line['item_id'],
-                'type' => 'shipping',
+                'type' => 'SHIPMENT',
                 'change' => -$line['quantity'],
                 'reference_id' => $shipmentId,
-                'user_id' => $createdBy,
-                'note' => 'Pengiriman dari shipment #' . $shipmentId,
+                'created_by' => $createdBy,
+                'note' => 'Pengiriman dari shipment #' . $shipmentNo,
             ]);
         }
 
